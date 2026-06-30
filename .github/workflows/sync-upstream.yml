@@ -1,0 +1,151 @@
+name: Sync upstream OpenAI plugins
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "37 7 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-upstream-openai-plugins
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Fetch upstream
+        run: |
+          git remote add upstream https://github.com/openai/plugins.git || true
+          git fetch upstream main
+
+      - name: Merge upstream/main
+        run: |
+          before="$(git rev-parse HEAD)"
+          echo "$before" > /tmp/before_sha
+
+          if git merge --no-edit upstream/main; then
+            echo "Merged upstream cleanly."
+            exit 0
+          fi
+
+          echo "Merge conflict detected. Trying to auto-resolve only expected marketplace files."
+
+          conflicts="$(git diff --name-only --diff-filter=U | sort)"
+          allowed="$(printf '%s\n' \
+            ".agents/plugins/api_marketplace.json" \
+            ".agents/plugins/marketplace.json" \
+            | sort)"
+
+          unexpected="$(comm -23 <(printf '%s\n' "$conflicts") <(printf '%s\n' "$allowed"))"
+
+          if [ -n "$unexpected" ]; then
+            echo "Unexpected merge conflicts:"
+            echo "$unexpected"
+            exit 1
+          fi
+
+          for f in .agents/plugins/marketplace.json .agents/plugins/api_marketplace.json; do
+            if git ls-files -u -- "$f" | grep -q .; then
+              git checkout --theirs -- "$f"
+              git add "$f"
+            fi
+          done
+
+          git commit --no-edit
+
+      - name: Re-apply personal marketplace names
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          edits = {
+              ".agents/plugins/marketplace.json": (
+                  "oijr-openai-default-plugins",
+                  "OijR OpenAI Default Plugins",
+              ),
+              ".agents/plugins/api_marketplace.json": (
+                  "oijr-openai-api-plugins",
+                  "OijR OpenAI API Plugins",
+              ),
+          }
+
+          for path, (name, display_name) in edits.items():
+              p = Path(path)
+              if not p.exists():
+                  continue
+
+              data = json.loads(p.read_text())
+              data["name"] = name
+              data.setdefault("interface", {})["displayName"] = display_name
+              p.write_text(json.dumps(data, indent=2) + "\n")
+          PY
+
+      - name: Validate marketplace files
+        run: |
+          python3 -m json.tool .agents/plugins/marketplace.json >/dev/null
+          python3 -m json.tool .agents/plugins/api_marketplace.json >/dev/null
+
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          expected = {
+              ".agents/plugins/marketplace.json": "oijr-openai-default-plugins",
+              ".agents/plugins/api_marketplace.json": "oijr-openai-api-plugins",
+          }
+
+          reserved = {
+              "openai-curated",
+              "openai-api-curated",
+          }
+
+          for path, expected_name in expected.items():
+              p = Path(path)
+              data = json.loads(p.read_text())
+              actual = data.get("name")
+
+              if actual in reserved:
+                  raise SystemExit(f"{path} still uses reserved marketplace name: {actual}")
+
+              if actual != expected_name:
+                  raise SystemExit(f"{path} has unexpected marketplace name: {actual!r}")
+
+          print("Marketplace names validated.")
+          PY
+
+      - name: Commit personal marketplace names if needed
+        run: |
+          if ! git diff --quiet; then
+            git add .agents/plugins/marketplace.json .agents/plugins/api_marketplace.json
+            git commit -m "Apply personal marketplace names after upstream sync"
+          fi
+
+      - name: Push if branch changed
+        run: |
+          before="$(cat /tmp/before_sha)"
+          after="$(git rev-parse HEAD)"
+
+          if [ "$before" = "$after" ]; then
+            echo "No upstream or marketplace changes."
+            exit 0
+          fi
+
+          git push origin HEAD:main
