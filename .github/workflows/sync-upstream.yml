@@ -74,6 +74,7 @@ jobs:
         run: |
           python3 - <<'PY'
           import json
+          import re
           from pathlib import Path
 
           edits = {
@@ -92,10 +93,28 @@ jobs:
               if not p.exists():
                   continue
 
-              data = json.loads(p.read_text())
-              data["name"] = name
-              data.setdefault("interface", {})["displayName"] = display_name
-              p.write_text(json.dumps(data, indent=2) + "\n")
+              text = p.read_text()
+              text = re.sub(
+                  r'(?m)^(\s*"name"\s*:\s*)"[^"]*"',
+                  rf'\1"{name}"',
+                  text,
+                  count=1,
+              )
+              text = re.sub(
+                  r'("interface"\s*:\s*\{\s*"displayName"\s*:\s*)"[^"]*"',
+                  rf'\1"{display_name}"',
+                  text,
+                  count=1,
+                  flags=re.DOTALL,
+              )
+
+              data = json.loads(text)
+              if data.get("name") != name:
+                  raise SystemExit(f"{path} marketplace name was not updated")
+              if data.get("interface", {}).get("displayName") != display_name:
+                  raise SystemExit(f"{path} displayName was not updated")
+
+              p.write_text(text)
           PY
 
       - name: Validate marketplace files

@@ -205,9 +205,7 @@
       "policy": {
         "installation": "AVAILABLE",
         "authentication": "ON_INSTALL",
-        "products": [
-          "CODEX"
-        ]
+        "products": ["CODEX"]
       },
       "category": "Developer Tools"
     },
@@ -220,9 +218,7 @@
       "policy": {
         "installation": "AVAILABLE",
         "authentication": "ON_INSTALL",
-        "products": [
-          "CODEX"
-        ]
+        "products": ["CODEX"]
       },
       "category": "Developer Tools"
     },
@@ -331,9 +327,7 @@
       "policy": {
         "installation": "AVAILABLE",
         "authentication": "ON_INSTALL",
-        "products": [
-          "CODEX"
-        ]
+        "products": ["CODEX"]
       },
       "category": "Developer Tools"
     },
@@ -346,9 +340,7 @@
       "policy": {
         "installation": "AVAILABLE",
         "authentication": "ON_INSTALL",
-        "products": [
-          "CODEX"
-        ]
+        "products": ["CODEX"]
       },
       "category": "Developer Tools"
     },
@@ -361,9 +353,7 @@
       "policy": {
         "installation": "AVAILABLE",
         "authentication": "ON_USE",
-        "products": [
-          "CODEX"
-        ]
+        "products": ["CODEX"]
       },
       "category": "Developer Tools"
     },
@@ -376,9 +366,7 @@
       "policy": {
         "installation": "AVAILABLE",
         "authentication": "ON_USE",
-        "products": [
-          "CODEX"
-        ]
+        "products": ["CODEX"]
       },
       "category": "Developer Tools"
     },
@@ -391,9 +379,7 @@
       "policy": {
         "installation": "AVAILABLE",
         "authentication": "ON_INSTALL",
-        "products": [
-          "CODEX"
-        ]
+        "products": ["CODEX"]
       },
       "category": "Developer Tools"
     },
@@ -418,9 +404,7 @@
       "policy": {
         "installation": "AVAILABLE",
         "authentication": "ON_INSTALL",
-        "products": [
-          "CODEX"
-        ]
+        "products": ["CODEX"]
       },
       "category": "Education & Research"
     },
@@ -433,9 +417,7 @@
       "policy": {
         "installation": "AVAILABLE",
         "authentication": "ON_INSTALL",
-        "products": [
-          "CODEX"
-        ]
+        "products": ["CODEX"]
       },
       "category": "Developer Tools"
     },
@@ -448,9 +430,7 @@
       "policy": {
         "installation": "AVAILABLE",
         "authentication": "ON_INSTALL",
-        "products": [
-          "CODEX"
-        ]
+        "products": ["CODEX"]
       },
       "category": "Developer Tools"
     },
@@ -475,9 +455,7 @@
       "policy": {
         "installation": "AVAILABLE",
         "authentication": "ON_INSTALL",
-        "products": [
-          "CODEX"
-        ]
+        "products": ["CODEX"]
       },
       "category": "Creativity"
     },
@@ -490,9 +468,7 @@
       "policy": {
         "installation": "AVAILABLE",
         "authentication": "ON_INSTALL",
-        "products": [
-          "CODEX"
-        ]
+        "products": ["CODEX"]
       },
       "category": "Developer Tools"
     },
@@ -1489,9 +1465,7 @@
       "policy": {
         "installation": "AVAILABLE",
         "authentication": "ON_INSTALL",
-        "products": [
-          "CODEX"
-        ]
+        "products": ["CODEX"]
       },
       "category": "Creativity"
     },
@@ -1528,9 +1502,7 @@
       "policy": {
         "installation": "AVAILABLE",
         "authentication": "ON_USE",
-        "products": [
-          "CODEX"
-        ]
+        "products": ["CODEX"]
       },
       "category": "Security"
     },
@@ -1555,9 +1527,7 @@
       "policy": {
         "installation": "AVAILABLE",
         "authentication": "ON_INSTALL",
-        "products": [
-          "CODEX"
-        ]
+        "products": ["CODEX"]
       },
       "category": "Developer Tools"
     },

@@ -5,6 +5,7 @@
 - The top-level marketplace identity in `.agents/plugins/api_marketplace.json` is personal: `oijr-openai-api-plugins`.
 - Plugin folder names, plugin entry names, plugin source paths, package names, and `.codex-plugin/plugin.json` names are unchanged.
 - `.github/workflows/sync-upstream.yml` syncs this fork from `https://github.com/openai/plugins.git` and reapplies the personal marketplace names after each merge.
+- The workflow preserves existing marketplace JSON formatting when it reapplies the personal names.
 
 ## Why
 Codex reserves OpenAI's official marketplace names, including `openai-curated` and `openai-api-curated`. A personal fork must use non-reserved top-level marketplace names before Codex can add it as a custom marketplace.
@@ -64,5 +65,5 @@ codex plugin marketplace upgrade
 ```
 
 ## Known Remaining Risks
-- The GitHub Actions workflow has been validated locally for syntax-sensitive shell and JSON logic, but the scheduled job itself must run on GitHub to prove repository permissions and branch protection behavior.
+- The GitHub Actions workflow has been validated locally and with a manual GitHub Actions canary run.
 - The marketplace should be added without sparse paths because plugin `source.path` values resolve from the marketplace root and point at `./plugins/...`.
